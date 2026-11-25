@@ -34,6 +34,8 @@ pub mod cef;
 pub mod chromium;
 #[cfg(all(feature = "desktop", target_os = "macos"))]
 mod trackpad;
+#[cfg(all(feature = "desktop", target_os = "macos"))]
+mod writing_tools;
 #[cfg(all(feature = "desktop", any(target_os = "linux", windows)))]
 mod island;
 #[cfg(feature = "desktop")]
@@ -1089,6 +1091,10 @@ pub fn run() {
             // route #445 took out.
             #[cfg(target_os = "macos")]
             trackpad::watch(app.handle());
+            #[cfg(target_os = "macos")]
+            if let Some(window) = app.get_webview_window("main") {
+                writing_tools::decline_affordance(&window);
+            }
             // GTK draws the menu as a bar inside the window, over the app's own
             // titlebar strip. The webview answers the edit chords without it.
             // The window manager's bar sat above that strip too, so it goes and
